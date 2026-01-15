@@ -160,11 +160,6 @@ def place_order():
     return jsonify({"ok": True, "order_id": order["order_id"], "ok": True,
         "affiliate_tracked": bool(affiliate_id), "commission": commission})
 
-@app.teardown_appcontext
-def close_connection(exception):
-    db = getattr(g, '_database', None)
-    if db is not None:
-        db.close()
 
 
 @app.route('/api/admin/status')
@@ -183,7 +178,7 @@ def favicon():
 @app.route('/admin_dashboard')
 def admin_dashboard():
     if session.get('role') != 'admin':
-        return "Unauthorized", 403
+        return redirect('/admin.html')
     return render_template('admin_dashboard.html')
 
 def admin_required(f):
@@ -198,7 +193,7 @@ def admin_required(f):
 @app.route('/affiliate_dashboard')
 def affiliate_dashboard():
     if session.get('role') != 'affiliate':
-        return "Unauthorized", 403
+        return redirect('/admin.html')
     return render_template('affiliate_dashboard.html')
 
 @app.route('/api/admin/login', methods=['POST'])
@@ -428,5 +423,6 @@ def affiliate_dashboard_data():
 if __name__ == '__main__':
 
     app.run(debug=True, port=8080)
+
 
 
