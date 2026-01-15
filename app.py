@@ -59,6 +59,16 @@ creds = service_account.Credentials.from_service_account_file(
 
 drive_service = build('drive', 'v3', credentials=creds)
 
+@app.route('/')
+def home():
+    # Ye aapke index.html ko default page banayega
+    return send_from_directory('.', 'index.html')
+
+# Agar aapke paas aur HTML files hain (jaise admin.html)
+@app.route('/<path:path>')
+def serve_static(path):
+    return send_from_directory('.', path)
+
 def read_json_from_drive(file_id):
     service = get_drive_service()
     try:
@@ -418,3 +428,4 @@ def affiliate_dashboard_data():
 if __name__ == '__main__':
 
     app.run(debug=True, port=8080)
+
