@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin Dashboard — Droply Hub</title>
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<div class="container">
+  <div class="card">
+    <div class="header">
+      <div>
+        <div class="logo">DROPLY<span style="color:#ff6b6b">HUB</span></div>
+        <div class="helper">Welcome to admin dashboard</div>
+      </div>
+      <div>
+        <button class="btn-ghost" id="logoutBtn">Logout</button>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <a href="admin_upload.html">Upload Product</a>
+      <a href="#" id="manageProducts">Manage Products</a>
+    </nav>
+
+    <div id="mainArea"></div>
+  </div>
+</div>
+<script src="admin.js"></script>
+<script>
+Admin.requireAuth && Admin.requireAuth();
+const main = document.getElementById('mainArea');
+const logout = document.getElementById('logoutBtn');
+logout.addEventListener('click', ()=>Admin.logout());
+
+async function renderProducts(){
+  try{
+    const list = await Admin.listProducts();
+    if(!list || list.length===0){ main.innerHTML = '<p class="helper">No products yet. Use Upload Product to add.</p>'; return; }
+    let html = '<table class="table"><thead><tr><th>Title</th><th>SKU</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody>';
+    list.forEach(p=>{
+      html += `<tr><td>${p.title}</td><td>${p.sku||''}</td><td>${p.price}</td><td>${p.quantity||0}</td><td><a class="link-like" href="admin_upload.html?id=${p.id}">Edit</a> <button class="link-like" data-id="${p.id}" data-action="delete">Delete</button></td></tr>`;
+    });
+    html += '</tbody></table>';
+    main.innerHTML = html;
+    // attach delete handlers
+    main.querySelectorAll('button[data-action="delete"]').forEach(btn=>{
+      btn.addEventListener('click', async (e)=>{
+        const id = btn.getAttribute('data-id');
+        if(!confirm('Delete product?')) return;
+        try{
+          const res = await Admin.deleteProduct(id);
+          if(res && res.ok){ alert('Deleted'); renderProducts(); } else alert('Delete failed');
+        }catch(err){ alert('Delete error'); }
+      });
+    });
+  }catch(e){ main.innerHTML = '<div class="error">Failed to load products</div>'; }
+}
+
+document.getElementById('manageProducts').addEventListener('click',(e)=>{ e.preventDefault(); renderProducts(); });
+</script>
+</body>
+</html>
