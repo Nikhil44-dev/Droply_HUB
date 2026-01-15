@@ -25,20 +25,20 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 app = Flask(__name__, static_folder='.', static_url_path='')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.secret_key = os.environ.get('Ni@040707') or 'dev-secret-change-me'
+app.secret_key = os.environ.get('app_key') or 'dev_app_kay'
 
 # Configuration
 cloudinary.config( 
-  cloud_name = "drukrslnx", 
-  api_key = "943189461386937", 
-  api_secret = "rQ_-S7b2zicxus1AToFmc5uVtGk" 
+  cloud_name = "cloudinary_username", 
+  api_key = "you_key", 
+  api_secret = "you_secret_keys" 
 )
 
 DRIVE_KEY_FILE = 'drive_key.json'   # service account json
-DRIVE_FILE_ID = '1JOpQkUdPGSt7xR8W-mtjTSsMKMp99bOt'
-CREDENTIALS_FILE_ID = '1W0zA9o0MUvE9porLC56PPZsMEu8FYPOu'
-PRODUCTS_FILE_ID = '1SU73aRyb5BH3HIfMIagGYpv9Oy63nXuY'
-IMAGES_FOLDER_ID = '1Pk3Xlqp4jjjTk9hIKH5yUrOWF3FgdcYC'
+DRIVE_FILE_ID = 'file_id1'
+CREDENTIALS_FILE_ID = 'file_id2'
+PRODUCTS_FILE_ID = 'file_id3'
+IMAGES_FOLDER_ID = 'file_id4'
 SCOPES = ['https://www.googleapis.com/auth/drive']
 
 
@@ -414,4 +414,5 @@ def affiliate_dashboard_data():
     })
 
 if __name__ == '__main__':
+
     app.run(debug=True, port=8080)
