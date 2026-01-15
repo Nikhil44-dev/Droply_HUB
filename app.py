@@ -29,11 +29,10 @@ app.secret_key = os.environ.get('app_key') or 'dev-secret-change-me'
 
 app_key = ""
 
-# Configuration
 cloudinary.config( 
-  cloud_name = "", 
-  api_key = "", 
-  api_secret = "" 
+  cloud_name = os.environ.get('CLOUDINARY_CLOUD_NAME'), 
+  api_key = os.environ.get('CLOUDINARY_API_KEY'), 
+  api_secret = os.environ.get('CLOUDINARY_API_SECRET') 
 )
 
 DRIVE_KEY_FILE = 'drive_key.json'   # service account json
@@ -423,6 +422,7 @@ def affiliate_dashboard_data():
 if __name__ == '__main__':
 
     app.run(debug=True, port=8080)
+
 
 
 
