@@ -25,13 +25,15 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 app = Flask(__name__, static_folder='.', static_url_path='')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.secret_key = os.environ.get('Ni@040707') or 'dev-secret-change-me'
+app.secret_key = os.environ.get('app_key') or 'dev-secret-change-me'
+
+app_key = ""
 
 # Configuration
 cloudinary.config( 
-  cloud_name = "drukrslnx", 
-  api_key = "943189461386937", 
-  api_secret = "rQ_-S7b2zicxus1AToFmc5uVtGk" 
+  cloud_name = "", 
+  api_key = "", 
+  api_secret = "" 
 )
 
 DRIVE_KEY_FILE = 'drive_key.json'   # service account json
@@ -414,4 +416,5 @@ def affiliate_dashboard_data():
     })
 
 if __name__ == '__main__':
+
     app.run(debug=True, port=8080)
