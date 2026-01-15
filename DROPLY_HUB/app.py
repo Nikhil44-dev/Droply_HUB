@@ -29,16 +29,16 @@ app.secret_key = os.environ.get('app_key') or 'dev_app_kay'
 
 # Configuration
 cloudinary.config( 
-  cloud_name = "cloudinary_username", 
-  api_key = "you_key", 
-  api_secret = "you_secret_keys" 
+  cloud_name = 'cloudinary_username.txt', 
+  api_key = 'you_key.txt', 
+  api_secret = 'you_secret_keys.txt' 
 )
 
 DRIVE_KEY_FILE = 'drive_key.json'   # service account json
-DRIVE_FILE_ID = 'file_id1'
-CREDENTIALS_FILE_ID = 'file_id2'
-PRODUCTS_FILE_ID = 'file_id3'
-IMAGES_FOLDER_ID = 'file_id4'
+DRIVE_FILE_ID = 'file_id1.txt'
+CREDENTIALS_FILE_ID = 'file_id2.txt'
+PRODUCTS_FILE_ID = 'file_id3.txt'
+IMAGES_FOLDER_ID = 'file_id4.txt'
 SCOPES = ['https://www.googleapis.com/auth/drive']
 
 
@@ -416,3 +416,4 @@ def affiliate_dashboard_data():
 if __name__ == '__main__':
 
     app.run(debug=True, port=8080)
+
