@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin Login — Droply Hub</title>
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<div class="container">
+  <div class="card">
+    <div class="header">
+      <div>
+        <div class="logo">DROPLY<span style="color:#ff6b6b">HUB</span></div>
+        <div class="helper">Admin Panel — ADMIN_ID + 8-digit PIN</div>
+      </div>
+      <div><button class="btn-ghost" id="toDashboard" style="display:none">Go to Dashboard</button></div>
+    </div>
+
+    <div id="message" class="helper"></div>
+
+    <div id="authArea"></div>
+  </div>
+</div>
+<script src="admin-fix.js"></script>
+<script src="admin.js"></script>
+<script>
+// Build the login/register UI depending on whether admin exists
+(function(){
+  const authArea = document.getElementById('authArea');
+  const msg = document.getElementById('message');
+
+  // check server whether admin exists
+  let existing = false;
+  fetch('/api/admin/exists').then(r => r.json()).then(j => existing = j.exists).catch(() => existing = false);
+
+  function showLogin(){
+    authArea.innerHTML = `
+      <form id="loginForm">
+        <div class="form-row"><label>ADMIN_ID/AFFILIATE_ID</label><input id="user" type="text" required placeholder="ADMIN_ID/AFFILIATE_ID"></div>
+        <div class="form-row"><label>8-digit PIN</label><input id="pin" type="password" maxlength="8" placeholder="8-digit PIN" required></div>
+        <div class="actions"><button class="btn-primary">Login</button></div>
+      </form>
+    `;
+
+    // Only attach listener for showRegister button here
+    document.getElementById('showRegister').addEventListener('click', showRegister);
+  }
+
+  if(existing){
+    showRegister();
+  } else {
+    showLogin();
+    msg.textContent = 'No admin found.';
+    msg.className = 'helper';
+  }
+
+  fetch('/affiliate_dashboard_data', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    affiliate_id: user
+  })
+})
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Upload Product — Admin</title>
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<div class="container">
+  <div class="card">
+    <div class="header">
+      <div>
+        <div class="logo">DROPLY<span style="color:#ff6b6b">HUB</span></div>
+        <div class="helper">Add new product with full details</div>
+      </div>
+      <div>
+        <button class="btn-ghost" id="backDash">Dashboard</button>
+        <button class="btn-ghost" id="logoutBtn">Logout</button>
+      </div>
+    </div>
+
+    <form id="uploadForm">
+      <div class="form-row"><label>Product Title</label><input id="title" type="text" required></div>
+      <div class="form-row form-grid">
+        <div><label>SKU</label><input id="sku" type="text"></div>
+        <div><label>Category</label><input id="category" type="text" placeholder="e.g. Hoodies, Jeans"></div>
+      </div>
+      <div class="form-row"><label>Description</label><textarea id="description" rows="4" required></textarea></div>
+      <div class="form-row form-grid">
+        <div><label>Price (₹)</label><input id="price" type="number" min="0" step="0.01" required></div>
+        <div><label>Original Price (₹)</label><input id="origPrice" type="number" min="0" step="0.01"></div>
+      </div>
+
+      <div class="form-row form-grid">
+        <div>
+          <label>Is size mandatory?</label>
+          <select id="sizeRequired">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+          </select>
+        </div>
+        <div>
+          <label>Quantity</label>
+          <input id="quantity" type="number" min="0" value="1">
+        </div>
+      </div>
+
+      <div class="form-row" id="sizesRow">
+        <label>Available sizes (comma separated)</label>
+        <input id="sizes" type="text" placeholder="S,M,L,XL">
+      </div>
+
+      <div class="form-row"><label>Tags (comma separated)</label><input id="tags" type="text" placeholder="trending,new"></div>
+
+      <div class="form-row"><label>Images (select one or more files)</label><input id="images" name="images" type="file" accept="image/*" multiple></div>
+      <div id="imagePreview" style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"></div>
+
+      <div class="actions"><button type="submit" class="btn-primary">Save Product</button></div>
+    </form>
+
+    <div id="out" style="margin-top:12px"></div>
+
+  </div>
+</div>
+
+<script src="admin.js"></script>
+<script>
+Admin.requireAuth();
+const back = document.getElementById('backDash'); back.addEventListener('click', ()=> location.href='admin_dashboard.html');
+const logout = document.getElementById('logoutBtn'); logout.addEventListener('click', ()=> Admin.logout());
+
+const sizeSel = document.getElementById('sizeRequired');
+const sizesRow = document.getElementById('sizesRow');
+sizeSel.addEventListener('change', ()=>{
+  if(sizeSel.value === 'yes'){ sizesRow.style.display = 'block'; document.getElementById('sizes').required = true; }
+  else { sizesRow.style.display = 'none'; document.getElementById('sizes').required = false; }
+});
+// initial
+if(sizeSel.value==='no'){ sizesRow.style.display='none'; }
+
+// if editing an existing product, load data
+const params = new URLSearchParams(window.location.search);
+const editId = params.get('id');
+const form = document.getElementById('uploadForm');
+if(editId){
+  (async ()=>{
+    try{
+      const r = await fetch('/api/admin/product/'+encodeURIComponent(editId));
+      if(!r.ok) throw new Error('Not found');
+      const j = await r.json();
+      if(j.ok && j.product){
+        const p = j.product;
+        document.getElementById('title').value = p.title || '';
+        document.getElementById('sku').value = p.sku || '';
+        document.getElementById('category').value = p.category || '';
+        document.getElementById('description').value = p.description || '';
+        document.getElementById('price').value = p.price || 0;
+        document.getElementById('origPrice').value = p.original_price || '';
+        document.getElementById('quantity').value = p.quantity || 0;
+        document.getElementById('tags').value = (p.tags||[]).join(',');
+        if(p.size_required){ document.getElementById('sizeRequired').value='yes'; document.getElementById('sizes').value = (p.sizes||[]).join(','); document.getElementById('sizes').required=true; document.getElementById('sizesRow').style.display='block'; }
+        // show existing images
+        const preview = document.getElementById('imagePreview'); preview.innerHTML='';
+        (p.images||[]).forEach(src=>{ 
+          const wrapper = document.createElement('div'); wrapper.style.position='relative'; wrapper.style.display='inline-block'; wrapper.style.marginRight='8px';
+          const img=document.createElement('img'); img.src=src; img.style.width='80px'; img.style.height='80px'; img.style.objectFit='cover'; img.style.borderRadius='8px';
+          const btn = document.createElement('button'); btn.textContent='Remove'; btn.className='link-like'; btn.style.position='absolute'; btn.style.bottom='4px'; btn.style.left='4px'; btn.dataset.filename = src.split('/').pop();
+          btn.addEventListener('click', async (ev)=>{
+            ev.preventDefault();
+            if(!confirm('Remove this image?')) return;
+            const fd = new FormData(); fd.append('id', editId); fd.append('filename', btn.dataset.filename);
+            try{
+              const r = await fetch('/api/admin/remove-image', { method:'POST', body: fd, credentials:'same-origin' });
+              const j = await r.json();
+              if(j.ok){ wrapper.remove(); } else { alert('Remove failed'); }
+            }catch(e){ alert('Remove error'); }
+          });
+          wrapper.appendChild(img); wrapper.appendChild(btn); preview.appendChild(wrapper);
+        });
+      }
+    }catch(e){ console.error(e); }
+  })();
+}
+form.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const submitBtn = form.querySelector('button[type="submit"]');
+    submitBtn.disabled = true; // Double click se bachne ke liye
+    submitBtn.textContent = 'Saving...';
+
+    const fd = new FormData();
+    // ... (aapka baki FormData wala code same rahega) ...
+    fd.append('title', document.getElementById('title').value.trim());
+    fd.append('sku', document.getElementById('sku').value.trim());
+    fd.append('category', document.getElementById('category').value.trim());
+    fd.append('description', document.getElementById('description').value.trim());
+    fd.append('price', document.getElementById('price').value || 0);
+    fd.append('originalPrice', document.getElementById('origPrice').value || 0);
+    fd.append('sizeRequired', document.getElementById('sizeRequired').value);
+    fd.append('sizes', document.getElementById('sizes').value || '');
+    fd.append('quantity', document.getElementById('quantity').value || 0);
+    fd.append('tags', document.getElementById('tags').value || '');
+    fd.append('createdAt', new Date().toISOString());
+
+    const files = document.getElementById('images').files;
+    for(let i=0; i<files.length; i++){
+        fd.append('images[]', files[i]);
+    }
+
+    try {
+        let res;
+        // Agar editId hai toh update, warna naya save
+        if(editId){ 
+            res = await Admin.updateProductFormData(fd, editId); 
+        } else { 
+            res = await Admin.saveProductFormData(fd); 
+        }
+
+        const out = document.getElementById('out');
+        if(res && (res.ok || res.id || res.images)){
+            out.innerHTML = '<div class="success" style="background:#d4edda; color:#155724; padding:10px; border-radius:5px; margin-bottom:10px;">Product saved successfully!</div>';
+            
+            // --- YE HAI MAIN FIX ---
+            form.reset(); 
+            document.getElementById('imagePreview').innerHTML = '';
+            sizesRow.style.display = 'none';
+
+            // Agar hum edit mode mein the, toh URL se ID hata kar naye product ke liye taiyar karein
+            if(editId) {
+                setTimeout(() => {
+                    window.location.href = 'upload_product.html'; // Page ko fresh state mein le aayein
+                }, 1500);
+            }
+        } else { 
+            out.innerHTML = '<div class="error">Save failed. Please check your data.</div>'; 
+        }
+    } catch(err) {
+        console.error(err);
+        document.getElementById('out').innerHTML = '<div class="error">Server error during upload.</div>';
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Save Product';
+    }
+});
+</script>
+</body>
+</html>
