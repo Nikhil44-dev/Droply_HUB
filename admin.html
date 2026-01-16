@@ -14,7 +14,7 @@
         <div class="logo">DROPLY<span style="color:#ff6b6b">HUB</span></div>
         <div class="helper">Admin Panel — ADMIN_ID + 8-digit PIN</div>
       </div>
-      <div><button class="btn-ghost" id="toDashboard" style="display:none">Go to Dashboard</button></div>
+      <div><button class="btn-ghost" id="toDashboard" style="display:none">🏠 Go to Dashboard</button></div>
     </div>
 
     <div id="message" class="helper"></div>
@@ -29,22 +29,68 @@
 (function(){
   const authArea = document.getElementById('authArea');
   const msg = document.getElementById('message');
-
+ 
+ 
   // check server whether admin exists
   let existing = false;
   fetch('/api/admin/exists').then(r => r.json()).then(j => existing = j.exists).catch(() => existing = false);
 
-  function showLogin(){
+  function showLogin() {
     authArea.innerHTML = `
       <form id="loginForm">
-        <div class="form-row"><label>ADMIN_ID/AFFILIATE_ID</label><input id="user" type="text" required placeholder="ADMIN_ID/AFFILIATE_ID"></div>
-        <div class="form-row"><label>8-digit PIN</label><input id="pin" type="password" maxlength="8" placeholder="8-digit PIN" required></div>
-        <div class="actions"><button class="btn-primary">Login</button></div>
+        <div class="form-row">
+            <label>ADMIN_ID/AFFILIATE_ID</label>
+            <input id="user" type="text" required placeholder="ADMIN_ID/AFFILIATE_ID">
+        </div>
+        <div class="form-row">
+            <label>8-digit PIN</label>
+            <input id="pin" type="password" maxlength="8" placeholder="8-digit PIN" required>
+        </div>
+        <div class="actions">
+            <button type="submit" id="loginBtn" class="btn-primary">Login</button>
+        </div>
       </form>
     `;
 
-    // Only attach listener for showRegister button here
-    document.getElementById('showRegister').addEventListener('click', showRegister);
+    const loginForm = document.getElementById('loginForm');
+    const loginBtn = document.getElementById('loginBtn');
+
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // 1. Button ko loading state mein lao
+        const originalText = loginBtn.innerText;
+        loginBtn.disabled = true;
+        loginBtn.innerHTML = `<span class="spinner"></span> Logging in...`;
+
+        const user = document.getElementById('user').value;
+        const pin = document.getElementById('pin').value;
+
+        try {
+            const res = await fetch('/api/admin/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user, pin })
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                window.location.href = '/admin_dashboard';
+            } else {
+                alert(data.error || 'Login failed');
+                // Error aane par button normal kar do
+                loginBtn.disabled = false;
+                loginBtn.innerText = originalText;
+            }
+        } catch (err) {
+            console.error(err);
+            alert('Server error, please try again.');
+            // Error aane par button normal kar do
+            loginBtn.disabled = false;
+            loginBtn.innerText = originalText;
+        }
+    });
   }
 
   if(existing){
@@ -66,3 +112,4 @@
 </script>
 </body>
 </html>
+
