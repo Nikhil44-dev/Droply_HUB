@@ -64,14 +64,7 @@
 </div>
 
 <script src="admin.js"></script>
-  <script>
-    // Agar server ne session timeout kar diya hai
-    fetch('/api/check-session')
-    .then(res => {
-        if(!res.ok) window.location.href = '/admin.html';
-    })
-    .catch(() => window.location.href = '/admin.html');
-</script>
+  
 <script>
 Admin.requireAuth();
 const back = document.getElementById('backDash'); back.addEventListener('click', ()=> location.href='admin_dashboard.html');
@@ -192,5 +185,6 @@ form.addEventListener('submit', async (e)=>{
 </script>
 </body>
 </html>
+
 
 
