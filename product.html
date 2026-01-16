@@ -3,12 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blaupunkt Premium Audio</title>
+    <title>Blaupunkt Premium Audio - DROPLY HUB</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="product.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Premium UI Enhancements */
+        :root {
+            --primary-dark: #121212;
+            --accent-red: #ff4757;
+            --success-green: #2ed573;
+            --soft-bg: #f4f7f6;
+        }
+
+        body { background-color: var(--soft-bg); font-family: 'Segoe UI', Roboto, sans-serif; }
+
+        /* Image Showcase Fix - No Crop */
+        .image-showcase {
+            background: #fff;
+            position: relative;
+            height: 380px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+        .image-slider img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain !important; /* Image cut nahi hogi */
+            transition: transform 0.4s ease;
+        }
+
+        /* Lightbox for Zoom */
+        #lightbox {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.95);
+            display: none;
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+        #lightbox img { max-width: 95%; max-height: 90%; object-fit: contain; }
+
+        /* Premium Trending Badge */
+        .price-container { display: flex; justify-content: space-between; align-items: flex-end; }
+        .trending-badge {
+            background: linear-gradient(135deg, #fff200, #ffc400);
+            color: #000;
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            box-shadow: 0 4px 10px rgba(255,196,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0% {transform: scale(1);} 50% {transform: scale(1.05);} 100% {transform: scale(1);} }
+
+        /* Trust Bar Styling */
+        .trust-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 20px 0; }
+        .trust-item { 
+            background: #fff; padding: 12px 5px; border-radius: 12px; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04); text-align: center;
+        }
+        .trust-item i { color: var(--accent-red); font-size: 1.2rem; margin-bottom: 6px; display: block; }
+        .trust-item span { font-size: 0.7rem; font-weight: 700; color: #444; }
+
+        /* Modern Purchase Card */
+        .detail-modal { border-radius: 24px 24px 0 0; border-top: 4px solid var(--accent-red); padding-bottom: 30px; }
+        .form-row input, .form-row select, .form-row textarea {
+            border: 1.5px solid #ececec; border-radius: 12px; padding: 12px; transition: 0.3s;
+        }
+        .form-row input:focus { border-color: var(--accent-red); background: #fff6f7; outline: none; }
+
+        /* Support Section */
+        .support-footer { text-align: center; padding: 20px; border-top: 1px solid #eee; margin-top: 20px; }
+        .support-footer a { color: #E1306C; text-decoration: none; font-weight: 700; font-size: 0.9rem; }
+
+        /* Order Success Overlay */
+        .order-success-overlay {
+            position: fixed; inset: 0; background: #fff; z-index: 10000;
+            display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+        }
+        .success-circle {
+            width: 100px; height: 100px; background: var(--success-green); color: #fff;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 3rem; margin-bottom: 20px;
+            animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        @keyframes bounceIn { 0% {transform: scale(0);} 100% {transform: scale(1);} }
+    </style>
 </head>
 <body>
+
+<div id="lightbox" onclick="this.style.display='none'"><img id="lightboxImg"></div>
+
+<div id="orderSuccess" class="order-success-overlay">
+    <div class="success-circle"><i class="fas fa-check"></i></div>
+    <h2 style="color: #121212;">Order Confirmed!</h2>
+    <p style="color: #666; padding: 0 30px;">Thank you for shopping with DROPLY HUB.<br>We will call you soon for verification.</p>
+    <button onclick="location.reload()" class="btn primary" style="margin-top: 30px; width: 200px;">Back to Shop</button>
+</div>
 
 <div class="app-container">
     <header class="main-header">
@@ -16,127 +117,119 @@
         <div class="nav-icons"><i class="fas fa-search"></i> <i class="fas fa-shopping-bag"></i></div>
     </header>
 
-    <section class="image-showcase">
+    <section class="image-showcase" id="imageShowcaseMain">
         <div class="promo-badge">
             <span class="off-text">50% OFF</span>
             <span class="sub-text">LIMITED DEAL</span>
         </div>
-       <div id="imageSlider" class="image-slider">
-        <!-- images loaded from server -->
-       </div>
-        <div class="slider-hint">Swipe for more →</div>
-        <div class="slider-indicators">
-            <div class="dot active"></div>
-            <div class="dot"></div>
-            <div class="dot"></div>
-        </div>
+        <div id="imageSlider" class="image-slider">
+            </div>
+        <div class="slider-hint">Tap to zoom <i class="fas fa-search-plus"></i></div>
     </section>
 
     <main class="content-card">
         <div class="price-container">
             <div id="priceTag" class="price-tag">
-                <span class="currency">₹</span><span id="productPrice">0</span>
+                <span class="currency">₹</span><span id="productPrice" style="font-size: 1.8rem; font-weight: 900;">0</span>
                 <span id="productOriginalPrice" class="original-price"></span>
             </div>
-            <div id="productRating" class="rating" style="display:none">
-                <i class="fas fa-star"></i> <span id="ratingValue">0</span> <span id="ratingCount"></span>
+            <div class="trending-badge">
+                <i class="fas fa-fire"></i> <span>TOP RATED</span>
             </div>
         </div>
 
         <h1 id="productTitle" class="product-title"></h1>
 
         <div class="trust-bar">
-            <div class="trust-item"><i class="fas fa-shield-alt"></i><span>1 Year Warranty</span></div>
+            <div class="trust-item"><i class="fas fa-hand-holding-usd"></i><span>Cash on Delivery</span></div>
             <div class="trust-item"><i class="fas fa-truck-fast"></i><span>Free Delivery</span></div>
             <div class="trust-item"><i class="fas fa-rotate-left"></i><span>7 Days Return</span></div>
         </div>
 
-        <section id="specsGrid" class="specs-grid">
-            <!-- specs generated from server product object -->
-        </section>
+        <section id="specsGrid" class="specs-grid"></section>
 
         <section class="features">
-            <h3>Why Choose This?</h3>
-            <div id="featuresList">
-                <!-- description bullets will be rendered here from server product description -->
-            </div>
+            <h3 style="font-size: 1rem; color: #121212;">Exclusive Features</h3>
+            <div id="featuresList"></div>
         </section>
+
+        <div class="support-footer">
+            <p style="font-size: 0.8rem; color: #888; margin-bottom: 5px;">Facing issues?</p>
+            <a href="https://instagram.com/YOUR_INSTA_ID" target="_blank">
+                <i class="fab fa-instagram"></i> Chat on Instagram Support
+            </a>
+        </div>
     </main>
 
     <footer class="footer-action">
         <button class="cart-btn"><i class="fas fa-cart-plus"></i></button>
-        <button id="buyNowBtn" class="buy-btn">BUY NOW</button>
+        <button id="buyNowBtn" class="buy-btn">BUY NOW (CASH ON DELIVERY)</button>
     </footer>
 </div>
 
-<!-- Purchase detail modal -->
 <div id="purchaseOverlay" class="modal-overlay" aria-hidden="true">
     <div class="detail-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-        <button class="modal-close" aria-label="Close purchase form"></button>
-        <h2 id="modalTitle">Confirm Purchase</h2>
-        <p class="modal-sub">Please provide your details to complete the order.</p>
+        <button class="modal-close" aria-label="Close" onclick="closeModal()">×</button>
+        <h2 id="modalTitle" style="font-size: 1.3rem;">Order Details</h2>
+        <p class="modal-sub">Please enter your shipping address below.</p>
         <form id="purchaseForm" class="purchase-form">
             <div class="form-row">
-                <label for="buyerName">Name</label>
-                <input id="buyerName" name="name" type="text" required placeholder="Your full name">
+                <label for="buyerName">Full Name</label>
+                <input id="buyerName" name="name" type="text" required placeholder="Enter your name">
             </div>
             <div class="form-row">
-                <label for="buyerMobile">Mobile</label>
-                <input id="buyerMobile" name="mobile" type="tel" inputmode="numeric" pattern="[0-9]{10}" required placeholder="10-digit mobile number">
+                <label for="buyerMobile">Mobile Number</label>
+                <input id="buyerMobile" name="mobile" type="tel" inputmode="numeric" pattern="[0-9]{10}" required placeholder="10-digit number">
             </div>
             <div class="form-row">
-                <label for="buyerAddress">Address</label>
-                <textarea id="buyerAddress" name="address" rows="3" required placeholder="Delivery address"></textarea>
+                <label for="buyerAddress">Full Address</label>
+                <textarea id="buyerAddress" name="address" rows="3" required placeholder="House No, Area, Pincode"></textarea>
             </div>
             <div class="form-row two-up">
                 <div>
                     <label for="sizeSelect">Size</label>
-                    <select id="sizeSelect" name="size" required>
-                        <option value="" disabled selected>Select size</option>
-                        <option>XS</option>
-                        <option>S</option>
-                        <option>M</option>
-                        <option>L</option>
-                        <option>XL</option>
-                    </select>
+                    <select id="sizeSelect" name="size" required></select>
                 </div>
                 <div>
-                    <label for="quantity">Quantity</label>
+                    <label for="quantity">Qty</label>
                     <input id="quantity" name="quantity" type="number" min="1" value="1" required>
                 </div>
             </div>
 
-            <div class="product-summary">
-                <strong>Product:</strong> <span id="summaryProduct"></span>
-                <br>
-                <strong>Price:</strong> <span id="summaryPrice"></span>
+            <div class="product-summary" style="background: #fdf2f2; padding: 10px; border-radius: 8px;">
+                <div style="font-size: 0.85rem;"><strong>Order:</strong> <span id="summaryProduct"></span></div>
+                <div style="font-size: 0.95rem; color: var(--accent-red);"><strong>Total:</strong> <span id="summaryPrice"></span></div>
             </div>
 
             <div class="form-actions">
-                <button type="button" class="btn secondary modal-cancel">Cancel</button>
-                <button type="submit" class="btn primary">Place Order</button>
+                <button type="submit" class="btn primary" style="width: 100%; height: 50px; font-size: 1rem; border-radius: 12px;">PLACE ORDER (COD)</button>
             </div>
         </form>
     </div>
 </div>
 
 <script>
+// Image Zoom Logic
+document.getElementById('imageShowcaseMain').addEventListener('click', (e) => {
+    if(e.target.tagName === 'IMG') {
+        document.getElementById('lightboxImg').src = e.target.src;
+        document.getElementById('lightbox').style.display = 'flex';
+    }
+});
+
 // Inline JS to handle modal open/close and validation
 (function(){
     const buyBtn = document.getElementById('buyNowBtn');
     const overlay = document.getElementById('purchaseOverlay');
     const app = document.querySelector('.app-container');
-    const closeBtn = overlay.querySelector('.modal-close');
-    const cancelBtn = overlay.querySelector('.modal-cancel');
     const form = document.getElementById('purchaseForm');
     const summaryProduct = document.getElementById('summaryProduct');
     const summaryPrice = document.getElementById('summaryPrice');
 
     async function openModal(){
-        // populate product info (if loaded from server by id)
         let title = document.getElementById('productTitle')?.textContent || '';
-        let price = document.getElementById('productPrice')?.textContent || document.getElementById('ratingValue')?.textContent || '';
-        // if product id present in query, fetch details
+        let price = document.getElementById('productPrice')?.textContent || '';
+        
         const params = new URLSearchParams(window.location.search);
         const pid = params.get('id');
         if(pid){
@@ -147,155 +240,113 @@
                 if(p){
                     title = p.title;
                     price = p.price;
-                    document.getElementById('summaryProduct') && (document.getElementById('summaryProduct').textContent = title);
-                    document.getElementById('summaryPrice') && (document.getElementById('summaryPrice').textContent = '₹'+p.price);
-                    // ensure modal size options reflect product
+                    document.getElementById('summaryProduct').textContent = title;
+                    document.getElementById('summaryPrice').textContent = '₹' + price;
                     const sizeSelect = document.getElementById('sizeSelect');
                     if(sizeSelect){
                         sizeSelect.innerHTML = '';
                         if(p.size_required && p.sizes && p.sizes.length){
-                            const opt0 = document.createElement('option'); opt0.value=''; opt0.disabled=true; opt0.selected=true; opt0.textContent='Select size'; sizeSelect.appendChild(opt0);
+                            const opt0 = document.createElement('option'); opt0.value=''; opt0.disabled=true; opt0.selected=true; opt0.textContent='Select'; sizeSelect.appendChild(opt0);
                             p.sizes.forEach(s=>{ const o=document.createElement('option'); o.textContent = s; o.value = s; sizeSelect.appendChild(o); });
                             sizeSelect.required = true;
                         } else {
-                            // no sizes required - provide one option "N/A"
                             const o=document.createElement('option'); o.textContent='One size'; o.value='one'; sizeSelect.appendChild(o); sizeSelect.required = false;
                         }
                     }
                 }
-            }catch(e){ /* ignore */ }
+            }catch(e){ }
         }
         summaryProduct.textContent = String(title).trim();
-        summaryPrice.textContent = String(price).trim();
+        summaryPrice.textContent = '₹' + String(price).trim();
 
         overlay.classList.add('open');
-        overlay.setAttribute('aria-hidden', 'false');
         app.classList.add('blurred');
-        // focus first input
-        setTimeout(()=> document.getElementById('buyerName').focus(), 220);
-        // prevent background scroll
         document.body.style.overflow = 'hidden';
     }
 
-    function closeModal(){
+    window.closeModal = function(){
         overlay.classList.remove('open');
-        overlay.setAttribute('aria-hidden', 'true');
         app.classList.remove('blurred');
         document.body.style.overflow = '';
     }
 
     buyBtn && buyBtn.addEventListener('click', openModal);
-    closeBtn && closeBtn.addEventListener('click', closeModal);
-    cancelBtn && cancelBtn.addEventListener('click', closeModal);
-    overlay.addEventListener('click', (e)=>{
-        if(e.target === overlay) closeModal();
-    });
+    overlay.addEventListener('click', (e)=>{ if(e.target === overlay) closeModal(); });
 
     form.addEventListener('submit', async function(e){
-    e.preventDefault();
+        e.preventDefault();
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Processing Order...';
 
-    const mobile = document.getElementById('buyerMobile');
-    if(!/^[0-9]{10}$/.test(mobile.value.trim())){
-        mobile.focus();
-        mobile.setCustomValidity('Enter a valid 10-digit mobile number');
-        mobile.reportValidity();
-        return;
-    } else {
-        mobile.setCustomValidity('');
-    }
+        const params = new URLSearchParams(window.location.search);
+        const pid = params.get('id');
 
-    const submitBtn = form.querySelector('button[type="submit"]');
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Placing...';
+        try {
+            const res = await fetch('/api/order', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                credentials: 'same-origin',
+                body: JSON.stringify({
+                    product_id: pid,
+                    product_title: document.getElementById('productTitle').textContent,
+                    price: document.getElementById('productPrice').textContent,
+                    size: document.getElementById('sizeSelect').value,
+                    quantity: document.getElementById('quantity').value,
+                    name: document.getElementById('buyerName').value,
+                    mobile: document.getElementById('buyerMobile').value,
+                    address: document.getElementById('buyerAddress').value
+                })
+            });
 
-    const params = new URLSearchParams(window.location.search);
-    const pid = params.get('id');
-
-    try {
-        const res = await fetch('/api/order', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            credentials: 'same-origin',
-            body: JSON.stringify({
-                product_id: pid,
-                product_title: document.getElementById('productTitle').textContent,
-                price: document.getElementById('productPrice').textContent,
-                size: document.getElementById('sizeSelect').value,
-                quantity: document.getElementById('quantity').value,
-                name: document.getElementById('buyerName').value,
-                mobile: document.getElementById('buyerMobile').value,
-                address: document.getElementById('buyerAddress').value
-            })
-        });
-
-        const data = await res.json();
-
-        if(data.ok){
-            submitBtn.textContent = 'Placed ✓';
-
-            setTimeout(()=>{
-                closeModal();
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Place Order';
+            const data = await res.json();
+            if(data.ok){
+                document.getElementById('orderSuccess').style.display = 'flex';
                 form.reset();
-            }, 1000);
-        } else {
-            alert('Order failed. Try again.');
+            } else {
+                alert('Order failed. Try again.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'PLACE ORDER (COD)';
+            }
+        } catch (err){
+            alert('Server error.');
             submitBtn.disabled = false;
-            submitBtn.textContent = 'Place Order';
         }
-
-    } catch (err){
-        alert('Server error. Please try later.');
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Place Order';
-    }
-});
+    });
 })();
 </script>
- 
+
 <script>
-// Load product details from server and populate page
+// Load product details from server
 (async function(){
     const params = new URLSearchParams(window.location.search);
     const pid = params.get('id');
     const titleEl = document.getElementById('productTitle');
     const priceEl = document.getElementById('productPrice');
-    const origEl = document.getElementById('productOriginalPrice');
-    const taglineEl = document.getElementById('productTagline');
     const slider = document.getElementById('imageSlider');
     const specsGrid = document.getElementById('specsGrid');
 
-    if(!pid){
-        // no id — show message
-        if(titleEl) titleEl.textContent = 'Product not found';
-        return;
-    }
+    if(!pid) return;
 
     try{
         const res = await fetch('/api/products');
-        if(!res.ok) throw new Error('Failed to load');
         const list = await res.json();
         const p = list.find(x=>x.id===pid);
-        if(!p){ if(titleEl) titleEl.textContent = 'Product not found'; return; }
+        if(!p) return;
 
-        // images
         slider.innerHTML = '';
         (p.images||[]).forEach((src, i)=>{
             const img = document.createElement('img');
-            img.className = 'hero-img';
             img.src = src;
-            img.alt = p.title + (i? ' image '+(i+1): '');
             slider.appendChild(img);
         });
 
-        // fill title, price, tagline
-        if(titleEl) titleEl.textContent = p.title || '';
-        if(priceEl) priceEl.textContent = p.price || 0;
-        if(origEl) origEl.textContent = p.original_price && p.original_price>p.price ? '₹'+p.original_price : '';
-        if(taglineEl) taglineEl.textContent = p.description ? (p.description.split('\n')[0] || '') : '';
+        titleEl.textContent = p.title || '';
+        priceEl.textContent = p.price || 0;
+        if(p.original_price) {
+            document.getElementById('productOriginalPrice').textContent = '₹'+p.original_price;
+        }
 
-        // specs: category, quantity, sizes, tags
         specsGrid.innerHTML = '';
         const addSpec = (label, value)=>{
             const d = document.createElement('div'); d.className='spec-card';
@@ -303,67 +354,28 @@
             specsGrid.appendChild(d);
         };
         if(p.category) addSpec('Category', p.category);
-        addSpec('Stock', p.quantity!=null ? p.quantity : '—');
-        if(p.sizes && p.sizes.length) addSpec('Sizes', p.sizes.join(', '));
-        if(p.tags && p.tags.length) addSpec('Tags', p.tags.join(', '));
+        addSpec('Status', 'In Stock');
 
-        // update buy modal size options and requirement
-        const sizeSelect = document.getElementById('sizeSelect');
-        if(sizeSelect){
-            sizeSelect.innerHTML = '';
-            if(p.size_required && p.sizes && p.sizes.length){
-                const opt0 = document.createElement('option'); opt0.value=''; opt0.disabled=true; opt0.selected=true; opt0.textContent='Select size'; sizeSelect.appendChild(opt0);
-                p.sizes.forEach(s=>{ const o=document.createElement('option'); o.textContent = s; o.value = s; sizeSelect.appendChild(o); });
-                sizeSelect.required = true;
-            } else {
-                const o=document.createElement('option'); o.textContent='One size'; o.value='one'; sizeSelect.appendChild(o); sizeSelect.required = false;
-            }
+        const featuresContainer = document.getElementById('featuresList');
+        if(featuresContainer && p.description){
+            featuresContainer.innerHTML = '';
+            const parts = p.description.split('\n').filter(Boolean);
+            parts.forEach(pt => {
+                const pill = document.createElement('div'); pill.className = 'feature-pill';
+                pill.innerHTML = `<i class="fas fa-check-circle" style="color:var(--success-green)"></i> ${pt}`;
+                featuresContainer.appendChild(pill);
+            });
         }
+    }catch(err){ console.error(err); }
 
-        // populate features from description: split into lines or sentences
-        try{
-            const featuresContainer = document.getElementById('featuresList');
-            if(featuresContainer){
-                featuresContainer.innerHTML = '';
-                let parts = [];
-                if(p.description){
-                    parts = p.description.split('\n').map(s=>s.trim()).filter(Boolean);
-                    if(parts.length <= 1){
-                        parts = p.description.split('. ').map(s=>s.trim()).filter(Boolean);
-                    }
-                }
-                if(parts.length === 0){
-                    const d = document.createElement('div'); d.className='feature-pill'; d.appendChild(document.createTextNode('No additional details.'));
-                    featuresContainer.appendChild(d);
-                } else {
-                    parts.forEach(pt => {
-                        const pill = document.createElement('div'); pill.className = 'feature-pill';
-                        const icon = document.createElement('i'); icon.className = 'fas fa-check-circle';
-                        pill.appendChild(icon);
-                        pill.appendChild(document.createTextNode(' ' + pt));
-                        featuresContainer.appendChild(pill);
-                    });
-                }
-            }
-        }catch(e){ console.error('features render error', e); }
-
-    }catch(err){
-        if(titleEl) titleEl.textContent = 'Failed to load product';
-        console.error(err);
+    const ref = params.get('ref');
+    if (ref) {
+        fetch('/api/track-affiliate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ref })
+        });
     }
-
-  const urlParams = new URLSearchParams(window.location.search);
-  const ref = urlParams.get('ref');
-
-  if (ref) {
-    // affiliate ref backend ko bhejo
-    fetch('/api/track-affiliate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'same-origin',
-      body: JSON.stringify({ ref })
-    });
-  }
 })();
 </script>
 </body>
