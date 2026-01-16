@@ -107,7 +107,7 @@
 <div id="orderSuccess" class="order-success-overlay">
     <div class="success-circle"><i class="fas fa-check"></i></div>
     <h2 style="color: #121212;">Order Confirmed!</h2>
-    <p style="color: #666; padding: 0 30px;">Thank you for shopping with DROPLY HUB.<br>We will call you soon for verification.</p>
+    <p style="color: #666; padding: 0 30px;">Thank you for shopping with DROPLY HUB.<br>We will SMS you soon for verification and delivary.</p>
     <button onclick="location.reload()" class="btn primary" style="margin-top: 30px; width: 200px;">Back to Shop</button>
 </div>
 
@@ -154,8 +154,8 @@
         </section>
 
         <div class="support-footer">
-            <p style="font-size: 0.8rem; color: #888; margin-bottom: 5px;">Facing issues?</p>
-            <a href="https://instagram.com/YOUR_INSTA_ID" target="_blank">
+            <p style="font-size: 0.8rem; color: #888; margin-bottom: 5px;">return and any Facing issues?</p>
+            <a href="https://instagram.com/droply.hub" target="_blank">
                 <i class="fab fa-instagram"></i> Chat on Instagram Support
             </a>
         </div>
@@ -163,7 +163,7 @@
 
     <footer class="footer-action">
         <button class="cart-btn"><i class="fas fa-cart-plus"></i></button>
-        <button id="buyNowBtn" class="buy-btn">BUY NOW (CASH ON DELIVERY)</button>
+        <button id="buyNowBtn" class="buy-btn">BUY NOW</button>
     </footer>
 </div>
 
@@ -202,7 +202,7 @@
             </div>
 
             <div class="form-actions">
-                <button type="submit" class="btn primary" style="width: 100%; height: 50px; font-size: 1rem; border-radius: 12px;">PLACE ORDER (COD)</button>
+                <button type="submit" class="btn primary" style="width: 100%; height: 50px; font-size: 1rem; border-radius: 12px;">ORDER NOW</button>
             </div>
         </form>
     </div>
@@ -306,7 +306,7 @@ document.getElementById('imageShowcaseMain').addEventListener('click', (e) => {
             } else {
                 alert('Order failed. Try again.');
                 submitBtn.disabled = false;
-                submitBtn.textContent = 'PLACE ORDER (COD)';
+                submitBtn.textContent = 'TRY again';
             }
         } catch (err){
             alert('Server error.');
@@ -380,3 +380,4 @@ document.getElementById('imageShowcaseMain').addEventListener('click', (e) => {
 </script>
 </body>
 </html>
+
