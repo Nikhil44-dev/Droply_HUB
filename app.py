@@ -180,12 +180,7 @@ def admin_dashboard():
     if session.get('role') != 'admin':
         return redirect('/admin.html')
     
-    # Fresh response banayein
-    response = make_response(render_template('admin_dashboard.html'))
-    # Cache khatam karne ke liye headers
-    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-    response.headers['Pragma'] = 'no-cache'
-    response.headers['Expires'] = '0'
+    return render_template('admin_dashboard.html')
     return response
 
 def admin_required(f):
@@ -439,6 +434,7 @@ def affiliate_dashboard_data():
 if __name__ == '__main__':
 
     app.run(debug=True, port=8080)
+
 
 
 
