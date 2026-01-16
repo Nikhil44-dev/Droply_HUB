@@ -390,11 +390,19 @@ def api_admin_delete(pid):
 
 @app.route('/affiliate_dashboard_data', methods=['POST'])
 def affiliate_dashboard_data():
-    affiliate_id = request.json.get('affiliate_id')  # frontend se bhejo
+    # 1. Frontend se ID lena
+    affiliate_id = request.json.get('affiliate_id') 
 
+    # 2. Drive se data read karna
     data = read_json_from_drive(DRIVE_FILE_ID)
-    orders = data.get('orders', [])
 
+    # --- YAHAN CHANGE HAI ---
+    # Agar data list hai toh use 'orders' man lo, warna khali list
+    if isinstance(data, list):
+        orders = data
+    else:
+        orders = []
+    # ------------------------
 
     completed_orders = 0
     pending_orders = 0
@@ -404,32 +412,34 @@ def affiliate_dashboard_data():
     print("AFFILIATE_ID_FROM_FRONTEND:", affiliate_id)
 
     for order in orders:
-        print("ORDER AFFILIATE:", order.get('affiliate_id'))
+        # Check karna ki order is affiliate ka hai ya nahi
         if order.get('affiliate_id') != affiliate_id:
             continue
 
+        # Commission calculate karna
         commission = float(order.get('commission_amount', 0))
         estimated_earning += commission
 
-        status = order.get('status')
+        status = order.get('status', 'pending')
 
         if status == 'completed':
-          completed_orders += 1
-          this_month_earning += commission
+            completed_orders += 1
+            this_month_earning += commission
         elif status == 'pending':
-          pending_orders += 1
+            pending_orders += 1
 
     return jsonify({
         'ok': True,
         'completed_orders': completed_orders,
         'pending_orders': pending_orders,
-        'this_month_earning': this_month_earning,
-        'estimated_earning': estimated_earning
+        'this_month_earning': round(this_month_earning, 2),
+        'estimated_earning': round(estimated_earning, 2)
     })
 
 if __name__ == '__main__':
 
     app.run(debug=True, port=8080)
+
 
 
 
