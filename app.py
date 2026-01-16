@@ -179,9 +179,7 @@ def favicon():
 def admin_dashboard():
     if session.get('role') != 'admin':
         return redirect('/admin.html')
-    
     return render_template('admin_dashboard.html')
-    return response
 
 def admin_required(f):
     @wraps(f)
@@ -434,6 +432,7 @@ def affiliate_dashboard_data():
 if __name__ == '__main__':
 
     app.run(debug=True, port=8080)
+
 
 
 
