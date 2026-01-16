@@ -105,7 +105,7 @@ def track_affiliate():
 
     return jsonify({'ok': True})
 
-def calculate_commission(price, quantity, rate=0.20):
+def calculate_commission(price, quantity, rate=0.10):
     try:
         price = float(price)
         quantity = int(quantity)
@@ -123,7 +123,7 @@ def place_order():
     price = data.get("price")
     quantity = data.get("quantity", 1)
     commission = 0
-    commission_rate = 0.20
+    commission_rate = 0.10
 
     if affiliate_id:
         commission = calculate_commission(price, quantity, commission_rate)
@@ -149,10 +149,11 @@ def place_order():
 
     orders = read_json_from_drive(DRIVE_FILE_ID)
 
-    if "orders" not in orders:
-        orders["orders"] = []
+    if not isinstance(orders, list):
+    orders = []
 
-    orders["orders"].append(order)
+    # Ab direct order append karo
+    orders.append(order)
 
     write_json_to_drive(DRIVE_FILE_ID, orders)
 
@@ -178,7 +179,14 @@ def favicon():
 def admin_dashboard():
     if session.get('role') != 'admin':
         return redirect('/admin.html')
-    return render_template('admin_dashboard.html')
+    
+    # Fresh response banayein
+    response = make_response(send_from_directory('.', 'admin_dashboard.html'))
+    # Cache khatam karne ke liye headers
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    return response
 
 def admin_required(f):
     @wraps(f)
@@ -422,6 +430,7 @@ def affiliate_dashboard_data():
 if __name__ == '__main__':
 
     app.run(debug=True, port=8080)
+
 
 
 
