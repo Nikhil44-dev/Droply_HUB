@@ -27,6 +27,14 @@
   </div>
 </div>
 <script src="admin.js"></script>
+  <script>
+    // Agar server ne session timeout kar diya hai
+    fetch('/api/check-session')
+    .then(res => {
+        if(!res.ok) window.location.href = '/admin.html';
+    })
+    .catch(() => window.location.href = '/admin.html');
+</script>
 <script>
 Admin.requireAuth && Admin.requireAuth();
 const main = document.getElementById('mainArea');
@@ -61,3 +69,4 @@ document.getElementById('manageProducts').addEventListener('click',(e)=>{ e.prev
 </script>
 </body>
 </html>
+
