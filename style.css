@@ -11,7 +11,7 @@ body {
     font-family: 'Segoe UI', Roboto, sans-serif;
     display: flex;
     justify-content: center;
-    margin: 20px 0;
+    margin:  0;
 }
 
 .app-container {
@@ -287,5 +287,6 @@ body {
     transition: transform 0.15s ease;
     padding: 14px 18px;
 }
+
 
 .buy-btn:active { transform: scale(0.98); }
