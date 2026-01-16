@@ -181,7 +181,7 @@ def admin_dashboard():
         return redirect('/admin.html')
     
     # Fresh response banayein
-    response = make_response(send_from_directory('.', 'admin_dashboard.html'))
+    response = make_response(render_template('admin_dashboard.html'))
     # Cache khatam karne ke liye headers
     response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     response.headers['Pragma'] = 'no-cache'
@@ -439,6 +439,7 @@ def affiliate_dashboard_data():
 if __name__ == '__main__':
 
     app.run(debug=True, port=8080)
+
 
 
 
