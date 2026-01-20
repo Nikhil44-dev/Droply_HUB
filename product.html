@@ -162,9 +162,26 @@
     </main>
 
     <footer class="footer-action">
-        <button class="cart-btn"><i class="fas fa-cart-plus"></i></button>
-        <button id="buyNowBtn" class="buy-btn">BUY NOW</button>
-    </footer>
+    <button class="cart-btn"><i class="fas fa-cart-plus"></i></button>
+    <button id="buyNowBtn" class="buy-btn">CHECK AVAILABILITY</button>
+</footer>
+
+<script>
+// Yahan aapki Adsterra Smart Link add kar di gayi hai
+const myAdsterraLink = "https://www.effectivegatecpm.com/uh302s58t?key=f59877d5cca062c3f7845e6996479edc";
+
+(function(){
+    const buyBtn = document.getElementById('buyNowBtn');
+    
+    // Purana modal wala logic hata kar seedha link open hoga
+    if(buyBtn) {
+        buyBtn.addEventListener('click', function() {
+            // New tab mein ad link khulega
+            window.open(myAdsterraLink, '_blank');
+        });
+    }
+})();
+</script>
 </div>
 
 <div id="purchaseOverlay" class="modal-overlay" aria-hidden="true">
@@ -380,6 +397,7 @@ document.getElementById('imageShowcaseMain').addEventListener('click', (e) => {
 </script>
 </body>
 </html>
+
 
 
 
