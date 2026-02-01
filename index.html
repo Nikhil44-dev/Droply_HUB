@@ -1,16 +1,182 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Access Locked</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Free Pizza Pre-Booking</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      color: #222;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 15px;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    }
+
+    .image-box {
+      width: 100%;
+      height: 220px;
+      background: #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: #555;
+    }
+
+    .image-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .content {
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      line-height: 1.6;
+      margin-bottom: 12px;
+      font-size: 15px;
+    }
+
+    ul {
+      padding-left: 18px;
+      font-size: 15px;
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    .location {
+      background: #f1f1f1;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin: 15px 0;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      background: #e63946;
+      color: #fff;
+      text-align: center;
+      padding: 14px;
+      font-size: 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      margin-top: 15px;
+    }
+
+    .btn:hover {
+      background: #d62839;
+    }
+
+    .note {
+      font-size: 12px;
+      color: #666;
+      margin-top: 12px;
+      text-align: center;
+    }
+
+    @media (min-width: 768px) {
+      .image-box {
+        height: 300px;
+      }
+
+      h1 {
+        font-size: 26px;
+      }
+    }
+  </style>
 </head>
 <body>
 
-<h2>🔒 Content Locked</h2>
-<p>Complete 1 quick step below to unlock access.</p>
+<div class="container">
+  <div class="card">
 
-<!-- CPA Grip Content Locker -->
-<script type="text/javascript" src="https://getafilenow.com/script_include.php?id=1870479"></script>
+    <!-- IMAGE PLACE -->
+    <div class="image-box"> <!-- Replace src with your pizza image --> <img src="https://img.freepik.com/free-photo/pizza-pizza-filled-with-tomatoes-salami-olives_140725-1200.jpg?semt=ais_hybrid&w=740&q=80" alt="Free Pizza Offer"> </div>
+
+    <div class="content">
+      <h1>🍕 Free Pizza – Pre-Booking Announcement</h1>
+
+      <p>
+        I’m sharing this pre-announcement so you’ll be one of the first to receive
+        the booking link! Sign up now to receive an exclusive link to book a table
+        for <strong>FREE pizza</strong> once reservations open.
+      </p>
+
+      <h3>How it works:</h3>
+      <ul>
+        <li>Sign up via the offer link</li>
+        <li>Once reservations open, you’ll receive an exclusive booking link</li>
+        <li>Maximum <strong>2 free pizzas per table</strong></li>
+        <li>Bookings are first-come, first-served</li>
+      </ul>
+
+      <div class="location">
+        <strong>📍 Location:</strong><br>
+        Secret free pizza offer — claim before it expires! No location check.<br>
+        Exclusive freebie for the first 100 people today<br>
+        Free Pizza Offer from Domino’s!
+        Limited time offer for USA!
+      </div>
+
+      <p>
+        Two pizzas are on us 🍕🍕  
+        You only need to cover drinks or extras.
+      </p>
+
+
+      <!-- BUTTON -->
+      <a href="?unlock=1" class="btn">
+  🔓 Check Availability
+</a>
+
+
+      <div class="note">
+        You may be redirected to a partner page to verify availability.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+
+  if (params.get("unlock") === "1") {
+    document.write(
+      '<script type="text/javascript" src="https://getafilenow.com/script_include.php?id=1870479"><\/script>'
+    );
+  }
+</script>
+
+
+
 
 </body>
 </html>
+
